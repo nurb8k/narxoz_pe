@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd('Hello hjfgjhfgjfWorld');
+    dd('Hellofghjkl; hjfgjhfgjfWorld');
     return view('welcome');
 });
