@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_identifier')->constrained()->onDelete('cascade');
+//            $table->foreignId('user_identifier')->constrained()->onDelete('cascade');
+            $table->string('user_identifier')->unique()->comment('Identifier of the user')->index();
             $table->string('short_info')->nullable();
             $table->text('about')->nullable();
             $table->timestamp('experience_year')->nullable();

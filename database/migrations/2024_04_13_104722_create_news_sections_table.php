@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('news_sections', function (Blueprint $table) {
             $table->id();
+//            $table->foreignIdFor()
             $table->timestamps();
         });
     }
