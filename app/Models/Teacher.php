@@ -28,8 +28,8 @@ class Teacher extends Model
 
     public function reviews(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Review::class, 'reviews',
-            'teacher_id', 'review_id')
+        return $this->belongsToMany(Student::class, 'reviews',
+            'teacher_id', 'student_id')
             ->withPivot('message', 'rating')
             ->withTimestamps();
     }
