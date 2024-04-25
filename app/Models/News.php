@@ -9,7 +9,7 @@ class News extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'image'];
+    protected $guarded = [];
 
     public function sections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

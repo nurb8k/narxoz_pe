@@ -18,16 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/test', function () {
-    dd('ok');
-    $asd = \App\Models\Review::with('student')->get();
-
-
-//    (new \Database\Seeders\DatabaseSeeder())->run();
-
-
-//    dd(\App\Models\Lesson::all());
-});
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
