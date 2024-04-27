@@ -16,4 +16,29 @@ class Subscription extends Model
         'student_id',
         'attendance_type',
     ];
+
+    protected $appends = ['student'];
+
+//    public function students(){
+//        return $this->belongsToMany(Student::class, 'subscriptions', 'lesson_id', 'student_id')->withPivot(
+//            'group', 'attendance_type'
+//        )->withTimeStamps();
+//    }
+//public function students()
+//{
+//    return $this->belongsToMany(Student::class, 'subscriptions', 'lesson_id', 'student_id')->withPivot(
+//        'group', 'attendance_type'
+//    )->withTimeStamps();
+//}
+//
+//    public function groupStudents()
+//    {
+//        return $this->students()->groupBy('group');
+//
+//    }
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
 }

@@ -16,18 +16,21 @@ class TeacherResource extends JsonResource
     {
         return [
             'id' => $this?->id,
-            'user_identifier' => $this?->user_identifier,
-            'email' => $this?->user->email,
+//            'user_identifier' => $this?->user_identifier,
+//            'email' => $this?->user->email,
             'name' => $this?->user->name,
             'surname' => $this?->user->surname,
-            'middle_name' => $this?->user->middle_name,
-            'fcm' => $this?->user->fcm,
+//            'middle_name' => $this?->user->middle_name,
+//            'fcm' => $this?->user->fcm,
             'avatar' => $this?->user->avatar,
             'short_info' => $this?->short_info,
             'about' => $this?->about,
             'experience_year' => $this?->experience_year,
-            'pivot_content' => 'njadskjasd djkajdksakads',
-            'pivot_syllabus' => 'dsads.pdf'
+//            'pivot_content' => 'njadskjasd djkajdksakads',
+//            'pivot_syllabus' => 'dsads.pdf',
+            'reviews' => ReviewResource::collection($this?->reviews),
+          'avg_rating' => $this?->reviews->avg('pivot.rating'),
+          'sum_review' => $this?->reviews->count(),
         ];
     }
 }

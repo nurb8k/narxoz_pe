@@ -26,7 +26,7 @@ class AuthController extends Controller
         if ($user && !Hash::check($request->password, $user->password)) {
             return response('not found', 400)->json([
                 'success' => false,
-                'message' => __('auth.login.failed'),
+                'message' => __('not found user'),
             ]);
         }
         $student = Student::query()->where('user_identifier', $request->identifier)->first();
@@ -34,11 +34,11 @@ class AuthController extends Controller
             $token = $user->createToken($user->identifier)->plainTextToken;
             return response()->json([
                 'success' => true,
-                'message' => __('auth.login.success.student'),
+                'message' => __('Login success student'),
                 'data' => [
                     'token' => $token,
                     'student' => $student,
-                    ]
+                    ],
             ]);
         }
         $teacher = Teacher::query()->where('user_identifier', $request->identifier)->first();

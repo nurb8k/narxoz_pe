@@ -28,4 +28,10 @@ class Section extends Model
             ->withPivot('content', 'syllabus')
             ->withTimestamps();
     }
+
+    public function news(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(News::class, 'news_sections', 'section_id', 'news_id')
+            ->withTimestamps();
+    }
 }

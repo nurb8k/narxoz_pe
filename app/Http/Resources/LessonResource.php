@@ -31,6 +31,7 @@ class LessonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+//        dd($this->with['user_id']);
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -49,7 +50,13 @@ class LessonResource extends JsonResource
                 'title' => $this?->place->title,
                 'address' => $this?->place->address,
             ],
-            'students' => StudentResource::collection($this?->students),
+            'students' => StudentResource::collection($this->students),
+            'is_available' => $this->is_available??false
+            //'students' => StudentResource::collection($this->groupStudents($request->group)),
+            //
         ];
     }
+
+
+
 }
