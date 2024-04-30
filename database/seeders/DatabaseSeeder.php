@@ -218,7 +218,7 @@ class DatabaseSeeder extends Seeder
             'lesson_id' => 4,
             'student_id' => 1,
             'attendance_type' => 'attending',
-            'group' => '21.04.2024 10:00',
+            'group' => '21.04.2024_WEDNESDAY_10:00',
         ]);
     }
 }
