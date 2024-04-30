@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('user_identifier')->unique()->comment('Identifier of the user')->index();
             $table->string('short_info')->nullable();
             $table->text('about')->nullable();
-            $table->timestamp('experience_year')->nullable();
+            $table->unsignedTinyInteger('experience_year')->nullable();
             $table->timestamps();
         });
     }

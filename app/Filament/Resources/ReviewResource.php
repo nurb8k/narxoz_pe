@@ -18,25 +18,29 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Отзывы';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('teacher_id')
-                    ->label('Teacher')
-                    ->relationship('teacher', 'user_identifier')
-                    ->required(),
-                Forms\Components\Select::make('student_id')
-                    ->relationship('student', 'user_identifier')
-                    ->required(),
-                Forms\Components\TextInput::make('message')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('rating')
-                    ->numeric(),
-            ]);
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
+    protected static ?int $navigationSort = 7;
+
+
+//    public static function form(Form $form): Form
+//    {
+//        return $form
+//            ->schema([
+//                Forms\Components\Select::make('teacher_id')
+//                    ->label('Teacher')
+//                    ->relationship('teacher', 'user_identifier')
+//                    ->required(),
+//                Forms\Components\Select::make('student_id')
+//                    ->relationship('student', 'user_identifier')
+//                    ->required(),
+//                Forms\Components\TextInput::make('message')
+//                    ->maxLength(255),
+//                Forms\Components\TextInput::make('rating')
+//                    ->numeric(),
+//            ]);
+//    }
 
     public static function table(Table $table): Table
     {
@@ -46,15 +50,19 @@ class ReviewResource extends Resource
                     ->label('ID')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('teacher.id')
+                Tables\Columns\TextColumn::make('teacher.fio')
+                    ->label('ФИО преподавателя')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('student.id')
+                Tables\Columns\TextColumn::make('student.fio')
+                    ->label('ФИО студента')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('message')
+                    ->label('Отзыв')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('rating')
+                    ->label('Рейтинг')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -90,7 +98,7 @@ class ReviewResource extends Resource
     {
         return [
             'index' => Pages\ListReviews::route('/'),
-            'create' => Pages\CreateReview::route('/create'),
+//            'create' => Pages\CreateReview::route('/create'),
             'edit' => Pages\EditReview::route('/{record}/edit'),
         ];
     }

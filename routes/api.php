@@ -1,10 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\LessonController;
-use App\Http\Controllers\Api\NewsController;
-use App\Http\Controllers\Api\SectionController;
-use App\Http\Controllers\Api\TeacherController;
+use App\Http\Controllers\Api as Api;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,38 +13,42 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [Api\AuthController::class, 'login']);
 
-Route::get('/migrate',function (){
-   Artisan::call('migrate');
+Route::post('/migrate', function () {
+    Artisan::call('migrate');
 });
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::post('/logout', [Api\AuthController::class, 'logout'])->middleware('throttle:1,1');
 
-    Route::post('/lessons/subscribe/{lesson}', [LessonController::class, 'subscribe']);
-    Route::post('/lessons/unsubscribe/{lesson}', [LessonController::class, 'unsubscribe']);
+    Route::post('/lessons/subscribe/{lesson}', [Api\LessonController::class, 'subscribe'])->middleware('throttle:1,1');
+    Route::post('/lessons/unsubscribe/{lesson}', [Api\LessonController::class, 'unsubscribe'])->middleware('throttle:1,1');
 
-    Route::get('/lessons', [LessonController::class, 'index']);
-    Route::get('/lessons/by-date', [LessonController::class, 'getByDate']);
-    Route::get('/lesson/{lesson}', [LessonController::class, 'show']);
+    Route::get('/lessons', [Api\LessonController::class, 'index']);//kerek emes negizi
+    Route::get('/lessons/by-date', [Api\LessonController::class, 'getByDate']);
+    Route::get('/lesson/{lesson}', [Api\LessonController::class, 'show']);
 
-    Route::get('/sections', [SectionController::class, 'index']);
-    Route::get('/section/{section}', [SectionController::class, 'show']);
+    Route::get('/sections', [Api\SectionController::class, 'index']);
+    Route::get('/section/{section}', [Api\SectionController::class, 'show']);
 
-    Route::get('/teachers', [TeacherController::class, 'index']);
-    Route::get('/teacher/{teacher}', [TeacherController::class, 'show']);
+    Route::get('/teachers', [Api\TeacherController::class, 'index']);
+    Route::get('/teacher/{teacher}', [Api\TeacherController::class, 'show']);
 
-    Route::get('/news', [NewsController::class, 'index']);
-    Route::get('/news/{news}', [NewsController::class, 'show']);
+    Route::get('/news', [Api\NewsController::class, 'index']);
+    Route::get('/news/{news}', [Api\NewsController::class, 'show']);
 
-    Route::get('/events', [SectionController::class, 'index']);
+    Route::get('/events', [Api\EventController::class, 'index']);
 
-    Route::get("/my_lessons", [LessonController::class, 'my_lessons']);
+    Route::get("/my_lessons", [Api\LessonController::class, 'my_lessons']);
+
+    Route::get('/profile', [Api\ProfileController::class, 'profile']);
+
+
+//    Route::post('/review/{teacher}',[Api\TeacherController::class, 'preview']);
+
 
     //only teachers
-    Route::post('/lesson/attendance/{lesson}', [TeacherController::class, 'attendance']);
+    Route::post('/lesson/attendance/{lesson}', [Api\TeacherController::class, 'attendance']);
 
 });
 // start

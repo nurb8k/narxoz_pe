@@ -3,33 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
-use App\Models\Teacher;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Requests\LoginRequest;
+use App\Http\Resources as Resources;
+use App\Models as Models;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController extends Controller
 {
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
-        if (!$request->identifier || !$request->identifier) {
-            return response('not found', 419)->json([
+        $user = Models\User::where('identifier', $request->identifier)->first();//s22017245
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
                 'success' => false,
-                'message' => __('auth.login.failed'),
-            ]);
+                'message' => __('Invalid username or password. Please try again'),
+            ], ResponseAlias::HTTP_NOT_FOUND);
         }
-        $user = User::where('identifier', $request->identifier)->first();//s22017245
-        if ($user && !Hash::check($request->password, $user->password)) {
-            return response('not found', 400)->json([
-                'success' => false,
-                'message' => __('not found user'),
-            ]);
-        }
-        $student = Student::query()->where('user_identifier', $request->identifier)->first();
+        $student = Models\Student::query()->where('user_identifier', $request->identifier)->first();
         if ($student) {
             $token = $user->createToken($user->identifier)->plainTextToken;
             return response()->json([
@@ -37,11 +29,11 @@ class AuthController extends Controller
                 'message' => __('Login success student'),
                 'data' => [
                     'token' => $token,
-                    'student' => $student,
-                    ],
+                    'student' => Resources\Profile\StudentResource::make($student),
+                ],
             ]);
         }
-        $teacher = Teacher::query()->where('user_identifier', $request->identifier)->first();
+        $teacher = Models\Teacher::query()->where('user_identifier', $request->identifier)->first();
         if ($teacher) {
             $token = $user->createToken($user->identifier)->plainTextToken;
             return response()->json([
@@ -49,7 +41,8 @@ class AuthController extends Controller
                 'message' => __('auth.login.success.teacher'),
                 'data' => [
                     'token' => $token,
-                    'teacher' => $teacher,]
+                    'teacher' => Resources\Profile\TeacherResource::make($teacher),
+                ]
             ]);
         }
 
@@ -59,21 +52,15 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function logout(): \Illuminate\Http\JsonResponse
     {
-        if (Auth::guard('sanctum')->check()) {
-            $user = Auth::guard('sanctum')->user();
-            $user->tokens()->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => __('auth.logout.success')
-            ]);
-        }
+        $user = Auth::guard('sanctum')->user();
+        $user->tokens()->delete();
 
         return response()->json([
             'success' => true,
-            'message' => __('auth.logout.repeat')
-        ], ResponseAlias::HTTP_ALREADY_REPORTED);
+            'message' => __('You successfully logged out.')
+        ], ResponseAlias::HTTP_OK);
     }
+
 }

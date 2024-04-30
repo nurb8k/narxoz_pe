@@ -5,19 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Enums\Week;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonSubscribeRequest;
-use App\Http\Resources\LessonResource;
+use App\Http\Resources as Resources;
 use App\Models\Lesson;
-
-use App\Models\Subscription;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
     public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $lessons = Lesson::with(['place', 'teacher', 'section', 'students'])->get();
-        return LessonResource::collection($lessons);
-    }
+        return Resources\LessonResource::collection($lessons);
+    }//kerek emes
 
     public function show(Lesson $lesson, LessonSubscribeRequest $request)
     {
@@ -26,17 +25,16 @@ class LessonController extends Controller
         $lesson->students = $students;
         $lesson->setIsAvailableAttribute($request->lesson_date);
 //        $lesson->is_available = $lesson->is_available($request->lesson_date);
-
-        return LessonResource::make($lesson);
-
+        return Resources\Lesson\ShowResource::make($lesson);
     }
 
-    public function my_lessons()
+    public function my_lessons(Request $request)
     {
+        //$request = $request->state; //available, unavailable
         $student = auth()->user()->student;
-        $lessons = $student->lessons()->with(['place', 'teacher', 'section', 'students'])->get();
+        $lessons = $student->lessons()->with(['teacher', 'section', 'students'])->get();
 
-        return LessonResource::collection($lessons);
+        return Resources\Lesson\MyLessonResource::collection($lessons);
     }
 
     public function subscribe(Lesson $lesson, LessonSubscribeRequest $request)
@@ -74,7 +72,7 @@ class LessonController extends Controller
         $weekDay = Carbon::parse($request->lesson_date)->dayOfWeek;
         $weekDay = Week::getWeekDay($weekDay);
         $lessons = Lesson::where('day_of_week', $weekDay)->with(['place', 'teacher', 'section', 'students'])->get();
-        return LessonResource::collection($lessons);
+        return Resources\LessonResource::collection($lessons);
     }
 
 }

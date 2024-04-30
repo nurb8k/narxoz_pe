@@ -137,5 +137,24 @@ class Lesson extends Model
 
     }
 
+
+    public function getColorAttribute()
+    {
+        $step = $this->capacity > 20 ? 2 : 1;
+
+        if ($this->capacity > 5){
+            if ($this->students()->count() >= $this->capacity-$step*2) {
+                return 'red';
+            }
+            elseif ($this->students()->count() >= $this->capacity-$step*5) {
+                return 'yellow';
+            }
+            else {
+                return 'green';
+            }
+        }
+        return 'green';
+    }
+
 }
 

@@ -50,15 +50,20 @@ class User extends Authenticatable
     ];
 
 
-    public function students(){
-        return $this->hasMany(Student::class, 'user_identifier', 'identifier');
-    }
-    public function teachers(){
-        return $this->hasMany(Teacher::class, 'user_identifier', 'identifier');
+//    public function students(){
+//        return $this->hasMany(Student::class, 'user_identifier', 'identifier');
+//    }
+//    public function teachers(){
+//        return $this->hasMany(Teacher::class, 'user_identifier', 'identifier');
+//    }
+
+    public function student(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Student::class, 'user_identifier', 'identifier');
     }
 
-    public function student(){
-        return $this->hasOne(Student::class, 'user_identifier', 'identifier');
+    public function teacher(){
+        return $this->hasOne(Teacher::class, 'user_identifier', 'identifier');
     }
 
 }

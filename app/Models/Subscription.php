@@ -36,9 +36,14 @@ class Subscription extends Model
 //        return $this->students()->groupBy('group');
 //
 //    }
-    public function student()
+    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    public function getGuideAttribute(): bool
+    {
+        return $this->attendance_type === 'attended';
     }
 
 }

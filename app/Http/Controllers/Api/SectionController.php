@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SectionResource;
-use App\Models\Section;
-use Illuminate\Http\Request;
+use App\Http\Resources\Section as Section;
+use App\Models as Models;
 
 class SectionController extends Controller
 {
-    public function index()
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
 
-        $sections = Section::with('lessons','teachers')->get();
-        return SectionResource::collection($sections);
+        $sections = Models\Section::with('lessons','teachers')->get();
+        return Section\ListResource::collection($sections);
     }
 
-    public function show(Section $section)
+    public function show(Models\Section $section): Section\ShowResource
     {
         $section->load('lessons','teachers');
-        return new SectionResource($section);
+        return new Section\ShowResource($section);
     }
 }

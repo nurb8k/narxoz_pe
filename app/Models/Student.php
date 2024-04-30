@@ -38,7 +38,7 @@ class Student extends Model
             ->withTimestamps();
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_identifier', 'identifier');
     }
@@ -47,4 +47,10 @@ class Student extends Model
     {
         return 'student';
     }
+    public function getFioAttribute() : string
+    {
+        return $this?->user?->name. ' ' . $this?->user?->surname;
+    }
+
+
 }

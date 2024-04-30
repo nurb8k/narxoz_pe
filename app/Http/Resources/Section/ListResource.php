@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Section;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TeacherResource extends JsonResource
+/**
+ * @property mixed $id
+ * @property mixed $title
+ * @property mixed $icon
+ */
+class ListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +20,9 @@ class TeacherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            //need delete this resource
+            'id' => $this->id,
+            'title' => $this->title,
+            'icon' => $this->icon
         ];
     }
 }

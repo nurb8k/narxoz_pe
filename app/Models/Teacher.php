@@ -40,4 +40,16 @@ class Teacher extends Model
     {
         return 'teacher';
     }
+
+    public function getFioAttribute() : string
+    {
+        return $this->user->name. ' ' . $this->user->surname;
+    }
+
+    public function sections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Section::class, 'teacher_syllabus', 'teacher_id', 'section_id')
+            ->withPivot('content', 'syllabus')
+            ->withTimestamps();
+    }
 }

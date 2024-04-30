@@ -8,6 +8,7 @@ use App\Models\Event;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,9 @@ class EventResource extends Resource
 
     protected static ?string $navigationLabel = 'События';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?int $navigationSort = 2;
+
 
     public static function form(Form $form): Form
     {
@@ -30,22 +33,25 @@ class EventResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
+                    ->label('Описание')
+                    ->required()
                     ->columnSpanFull(),
                 Forms\Components\Select::make('status')
+                    ->label('Статус')
                     ->options([
-                        'draft' => 'Черновик',
-                        'published' => 'Опубликовано',
-                    ]),
-                Forms\Components\TextInput::make('author')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('link')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('category')
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('start_date'),
-                Forms\Components\DateTimePicker::make('end_date'),
+                        'Праздник' => 'Праздник',
+                        'Турнир' => 'Турнир',
+                        'Особые даты' => 'Особые даты',
+                        'Другое' => 'Другое',
+                    ])
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\DateTimePicker::make('start_date')
+                    ->label('Дата начала')
+                    ->required(),
+                Forms\Components\DateTimePicker::make('end_date')
+                    ->label('Дата окончания')
+                    ->required(),
             ]);
     }
 
@@ -54,19 +60,25 @@ class EventResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->wrap()
+                    ->label('Название')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('author')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('link')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('category')
+                    ->label('Статус')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Праздник' => 'gray',
+                        'Турнир' => 'warning',
+                        'Особые даты' => 'success',
+                        'Другое' => 'danger',
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
+                    ->label('Дата начала')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
+                    ->label('Дата окончания')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -79,16 +91,17 @@ class EventResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        //
+    ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ])
+        ->paginated();
     }
 
     public static function getRelations(): array
@@ -105,5 +118,10 @@ class EventResource extends Resource
             'create' => Pages\CreateEvent::route('/create'),
             'edit' => Pages\EditEvent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::count();
     }
 }

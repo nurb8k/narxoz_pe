@@ -24,6 +24,10 @@ class NewsResource extends Resource
     protected static ?string $navigationLabel = 'Новости';
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?int $navigationSort = 1;
+
+
+    protected static ?string $recordTitleAttribute = 'Новости';
 
     public static function form(Form $form): Form
     {
@@ -44,28 +48,29 @@ class NewsResource extends Resource
                     ->required()
                     ->label('Статус')
                     ->options([
-                        'draft' => 'Черновик',
-                        'published' => 'Опубликовано',
+                        'Черновик' => 'Черновик',
+                        'Опубликовано' => 'Опубликовано',
                     ]),
                 TextInput::make('author')
                     ->label('Автор (не обязательно)')
                     ->nullable()
                     ->maxLength(255),
-                TextInput::make('link')
-                    ->label('Ссылка (не обязательно)')
-                    ->nullable()
-                    ->maxLength(255),
                 Select::make('category')
                     ->label('Категория')
                     ->options([
-                        'news' => 'Новости',
-                        'articles' => 'Статьи',
-                        'events' => 'События',
-                        'reviews' => 'Обзоры',
-                        'contests' => 'Конкурсы',
-                        'congratulations' => 'Поздравления',
+                        'Новости' => 'Новости',
+                        'Статьи' => 'Статьи',
+                        'События' => 'События',
+                        'Обзоры' => 'Обзоры',
+                        'Конкурсы' => 'Конкурсы',
+                        'Поздравления' => 'Поздравления',
                     ])
                     ->required(),
+                Select::make('sections')
+                ->label('Разделы')
+                ->relationship('sections', 'title')
+                ->multiple()
+                ->required(),
             ]);
     }
 
@@ -78,20 +83,38 @@ class NewsResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
+                    ->wrap()
+                    ->label('Заголовок')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('author')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('link')
+                    ->label('Статус')
+                    ->color(fn (string $state): string => match ($state) {
+                        'Черновик' => 'gray',
+                        'Опубликовано' => 'success',
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Новости' => 'primary',
+                        'Статьи' => 'info',
+                        'События' => 'warning',
+                        'Обзоры' => 'success',
+                        'Конкурсы' => 'danger',
+                        'Поздравления' => 'secondary',
+                    })
+                    ->label('Категория')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sections.title')
+                    ->label('Секции')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Дата создания')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Дата обновления')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -123,5 +146,10 @@ class NewsResource extends Resource
             'create' => Pages\CreateNews::route('/create'),
             'edit' => Pages\EditNews::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+       return self::getModel()::count();
     }
 }

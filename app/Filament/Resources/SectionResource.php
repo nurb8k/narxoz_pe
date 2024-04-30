@@ -18,6 +18,7 @@ class SectionResource extends Resource
     protected static ?string $model = Section::class;
     protected static ?string $navigationLabel = 'Секции';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -38,8 +39,8 @@ class SectionResource extends Resource
                 Forms\Components\Select::make('status')
                     ->required()
                     ->options([
-                        'draft' => 'Черновик',
-                        'published' => 'Опубликовано',
+                        'На все секции' => 'Всем кроме ЛФК',
+                        'ЛФК' => 'ЛФК',
                     ]),
             ]);
     }
@@ -52,10 +53,20 @@ class SectionResource extends Resource
                     ->label('ID')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('icon')
+                    ->label('Иконка'),
                 Tables\Columns\TextColumn::make('title')
+                    ->label('Название')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Статус')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'ЛФК' => 'warning',
+                        'На все секции' => 'success',
+                    })
+                ,
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

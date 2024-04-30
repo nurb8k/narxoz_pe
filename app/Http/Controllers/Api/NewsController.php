@@ -2,31 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources as Resources;
 use App\Http\Resources\NewsResource;
 use App\Http\Resources\TeacherResource;
-use App\Models\News;
+use App\Models as Models;
+use Filament\Resources\Resource;
 use Illuminate\Http\Request;
 
 class NewsController extends \App\Http\Controllers\Controller
 {
 
-    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        $section = $request->section; //order by section
-        $news = News::query()
-            ->whereHas('sections', function ($query) use ($section) {
-                $query->where('title', $section);
-            })
+        $news = Models\News::query()
             ->with('sections')
             ->latest()
-            ->get();
-        return NewsResource::collection($news);
+            ->paginate(7);
+        return Resources\News\ListResource::collection($news);
     }
 
-    public function show(News $news): NewsResource
+    public function show(Models\News $news): Resources\News\ShowResource
     {
         $news->load('sections');
-        return NewsResource::make($news);
+        return Resources\News\ShowResource::make($news);
     }
 
 
