@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Student;
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +18,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+
 });
-Route::get('/asd',function (){
-    dd(Teacher::with('user')->pluck('name', 'id')->toArray());
+
+Route::get('/asd', function () {
+    Artisan::call('storage:link');
 });
+
+Route::get('/dsa', function () {
+    Artisan::call('optimize:clear');
+});
+
+
+//Route::get('/asd',function (){
+//    dd(Teacher::with('user')->pluck('name', 'id')->toArray());
+//});

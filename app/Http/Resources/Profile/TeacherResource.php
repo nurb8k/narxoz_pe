@@ -19,12 +19,15 @@ class TeacherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this?->id,
-            'title' => $this?->title,
-            'description' => $this?->description,
-            'sections' => $this?->sections->pluck('title'),
-            'image' => $this?->image,
-            'created_at' => $this?->created_at?->diffForHumans(),
+            'id' => $this->id,
+            'user_identifier' => $this->user_identifier,
+            'email' => $this->user?->email,
+            'name' => $this->user?->name,
+            'surname' => $this->user->surname,
+            'middle_name' => $this->user?->middle_name,
+            'avatar' => asset($this->user->avatar),
+            'lfk' => false,
+            'user_type' => $this->user_type,
         ];
     }
 }

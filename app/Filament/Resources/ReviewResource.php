@@ -51,34 +51,25 @@ class ReviewResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('teacher.fio')
-                    ->label('ФИО преподавателя')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('ФИО преподавателя'),
                 Tables\Columns\TextColumn::make('student.fio')
-                    ->label('ФИО студента')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('ФИО студента'),
                 Tables\Columns\TextColumn::make('message')
                     ->label('Отзыв')
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('rating')
                     ->label('Рейтинг')
+                    ->color(fn (Review $record) => $record->rating >= 4 ? 'success' : 'warning')
+                    ->badge()
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -98,8 +89,11 @@ class ReviewResource extends Resource
     {
         return [
             'index' => Pages\ListReviews::route('/'),
-//            'create' => Pages\CreateReview::route('/create'),
-            'edit' => Pages\EditReview::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Отзывы';
     }
 }

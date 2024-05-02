@@ -67,6 +67,13 @@ class Lesson extends Model
         return $this->students()->wherePivot('group', $group);
     }
 
+    public function getStudentsByGroup()
+    {
+        $group = $this->start_time . '_' . $this->day_of_week; // 08:00:00_$week_
+//        dd($group, $this->students(), $this->students()->wherePivot('group', 'like', '%' . $group.'%')->get());
+        return $this->students()->wherePivot('group', 'like','%'.$group.'%');
+    }
+
 
     public function getGroupDate($group_date): string
     {
@@ -137,24 +144,30 @@ class Lesson extends Model
 
     }
 
-
     public function getColorAttribute()
     {
         $step = $this->capacity > 20 ? 2 : 1;
 
-        if ($this->capacity > 5){
-            if ($this->students()->count() >= $this->capacity-$step*2) {
+        if ($this->capacity > 5) {
+            if ($this->students()->count() >= $this->capacity - $step * 2) {
                 return 'red';
-            }
-            elseif ($this->students()->count() >= $this->capacity-$step*5) {
+            } elseif ($this->students()->count() >= $this->capacity - $step * 5) {
                 return 'yellow';
-            }
-            else {
+            } else {
                 return 'green';
             }
         }
         return 'green';
     }
+    public function getQweAttribute()
+    {
 
+        return 'green';
+    }
+
+    public function getParseDateTimeToString($data)
+    {
+        return Carbon::parse($data)->format('H:i');
+    }
 }
 

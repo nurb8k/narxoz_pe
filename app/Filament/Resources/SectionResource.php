@@ -17,6 +17,7 @@ class SectionResource extends Resource
 {
     protected static ?string $model = Section::class;
     protected static ?string $navigationLabel = 'Секции';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 3;
 
@@ -65,16 +66,7 @@ class SectionResource extends Resource
                     ->color(fn (string $state): string => match ($state) {
                         'ЛФК' => 'warning',
                         'На все секции' => 'success',
-                    })
-                ,
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    }),
             ])
             ->filters([
                 //
@@ -103,5 +95,10 @@ class SectionResource extends Resource
             'create' => Pages\CreateSection::route('/create'),
             'edit' => Pages\EditSection::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Секции';
     }
 }

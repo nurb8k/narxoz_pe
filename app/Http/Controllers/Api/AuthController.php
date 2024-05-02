@@ -18,7 +18,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => __('Invalid username or password. Please try again'),
+                'message' => __('Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова'),
             ], ResponseAlias::HTTP_NOT_FOUND);
         }
         $student = Models\Student::query()->where('user_identifier', $request->identifier)->first();
@@ -29,7 +29,7 @@ class AuthController extends Controller
                 'message' => __('Login success student'),
                 'data' => [
                     'token' => $token,
-                    'student' => Resources\Profile\StudentResource::make($student),
+                    'user' => Resources\Profile\StudentResource::make($student),
                 ],
             ]);
         }
@@ -38,17 +38,17 @@ class AuthController extends Controller
             $token = $user->createToken($user->identifier)->plainTextToken;
             return response()->json([
                 'success' => true,
-                'message' => __('auth.login.success.teacher'),
+                'message' => __('Login success teacher'),
                 'data' => [
                     'token' => $token,
-                    'teacher' => Resources\Profile\TeacherResource::make($teacher),
+                    'user' => Resources\Profile\TeacherResource::make($teacher),
                 ]
             ]);
         }
 
         return response('not found', 404)->json([
             'success' => false,
-            'message' => __('auth.login.failed'),
+            'message' => __('Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова'),
         ]);
     }
 

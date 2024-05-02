@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AttendanceType;
 use App\Filament\Resources\SubscriptionResource\Pages;
 use App\Filament\Resources\SubscriptionResource\RelationManagers;
+use App\Models\Student;
 use App\Models\Subscription;
+use App\Models\Teacher;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Бронированные занятия';
+    protected static ?string $navigationLabel = 'Бронированные занятии';
     protected static ?int $navigationSort = 6;
 
 
@@ -27,20 +28,24 @@ class SubscriptionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('group')
+                    ->label('Группа')
                     ->maxLength(255),
                 Forms\Components\Select::make('teacher_id')
-                    ->label('Teacher')
-                    ->relationship('teacher', 'user_identifier')
+                    ->label('Тренер')
+                    ->options(Teacher::query()->get()->each(function ($item) {
+                        $item->name = $item->fio . ' ' . $item->user->identifier;
+                    })->pluck('name', 'id')->toArray())
+                    ->searchable()
                     ->required(),
                 Forms\Components\Select::make('student_id')
-                    ->relationship('student', 'user_identifier')
+                    ->label('Студент')
+                    ->options(Student::query()->get()->each(function ($item) {
+                        $item->name = $item->fio . ' ' . $item->user->identifier;
+                    })->pluck('name', 'id')->toArray())
+                    ->searchable()
                     ->required(),
                 Forms\Components\Select::make('attendance_type')
-                    ->options([
-                        'attending' => 'Присутствует',
-                        'completed' => 'Завершено успешно',
-                        'cancelled' => 'Отменено|Не присутствовал',
-                    ])
+                    ->options(AttendanceType::getTypes())
             ]);
     }
 
@@ -52,24 +57,23 @@ class SubscriptionResource extends Resource
                     ->label('ID')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('group')
+                Tables\Columns\TextColumn::make('parse_group')
+                    ->label('Группа')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('lesson_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('student_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('attendance_type')
+                Tables\Columns\TextColumn::make('lesson.title')
+                    ->label('Занятие')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('student.fio')
+                    ->label('Студент')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('parse_attendance_type')
+                    ->label('Посещение')
+                    ->badge()
+                    ->color(fn (Subscription $record) => match ($record->attendance_type) {
+                        'attended' => 'success',
+                        'missed' => 'danger',
+                        'waiting' => 'warning',
+                    }),
             ])
             ->filters([
                 //
@@ -95,8 +99,12 @@ class SubscriptionResource extends Resource
     {
         return [
             'index' => Pages\ListSubscriptions::route('/'),
-            'create' => Pages\CreateSubscription::route('/create'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Бронированные занятии';
     }
 }

@@ -26,7 +26,7 @@ class ListResource extends JsonResource
             'id' => $this?->id,
             'title' => $this?->title,
             'sections' => $this?->sections->pluck('title'),
-            'image' => $this?->image,
+            'image' => asset('storage/' . $this->image),
             'created_at' => $this?->created_at?->diffForHumans(),
         ];
     }

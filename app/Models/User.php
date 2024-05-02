@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'identifier',
+        'is_admin',
         'name',
         'middle_name',
         'fcm',
@@ -64,6 +65,11 @@ class User extends Authenticatable
 
     public function teacher(){
         return $this->hasOne(Teacher::class, 'user_identifier', 'identifier');
+    }
+
+    public function getAvatarPathAttribute(): string
+    {
+        return $this->avatar=='default.png' ? asset($this->avatar) : asset('storage/'.$this->avatar);
     }
 
 }

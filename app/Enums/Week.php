@@ -27,9 +27,29 @@ class Week
             self::SUNDAY => 'sunday',
         ];
     }
+
+    public static function getWeekDayForKeys()
+    {
+        return [
+            'monday' => 'Понедельник',
+            'tuesday' => 'Вторник',
+            'wednesday' => 'Среда',
+            'thursday' => 'Четверг',
+            'friday' => 'Пятница',
+            'saturday' => 'Суббота',
+            'sunday' => 'Воскресенье',
+        ];
+    }
+
     public static function getWeekDay($day): string
     {
         $days = self::getWeekDays();
+        return $days[$day];
+    }
+
+    public static function getWeekDayForKey($day): string
+    {
+        $days = self::getWeekDayForKeys();
         return $days[$day];
     }
 }

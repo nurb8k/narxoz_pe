@@ -24,15 +24,13 @@ class StudentResource extends JsonResource
     {
         return [
             'id' => $this?->id,
-            'full_name' => $this?->fio,
             'user_identifier' => $this?->user_identifier,
             'email' => $this?->user?->email,
-            'avatar' => $this?->user?->avatar,
-//            'gpa' => $this?->gpa,
-//            'degree' => $this?->degree,
-//            'group' => $this?->group,
-//            'course_year' => $this?->cource_year,
-//            'gender' => $this?->gender,
+            'name' => $this->user?->name,
+            'surname' => $this->user->surname,
+            'middle_name' => $this->user?->middle_name,
+            'avatar' => asset($this?->user?->avatar),
+            'user_type' => $this->user_type,
             'attendance_count' => $this?->attendance_count,
         ];
     }

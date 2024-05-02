@@ -24,10 +24,12 @@ class ListResource extends JsonResource
     {
         return [
             'id' => $this?->id,
-            'full_name' => $this?->fio,
+            'name' => $this->user->name,
+            'surname' => $this->user->surname,
+            'middle_name' => $this->user->middle_name,
             'short_info' => $this?->short_info,
-            'avatar' => $this?->user->avatar,
-            'avg_rating' => $this?->reviews->avg('pivot.rating'),
+            'avatar' => asset($this->user->avatar_path),
+            'avg_rating' => $this?->reviews->avg('pivot.rating')??'5',
         ];
     }
 }

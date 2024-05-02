@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Section;
 
+use App\Http\Resources\LessonResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,8 +22,10 @@ class ShowResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description
+            'title' => $this->title,//
+            'description' => $this->description,
+            'image' => asset('section_image.jpeg'),
+            'lessons' => LessonResource::collection($this->lessons)
         ];
     }
 }

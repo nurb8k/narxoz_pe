@@ -24,11 +24,12 @@ class ListResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this?->id,
-            'title' => $this?->title,
-            'description' => $this?->description,
-            'status' => $this?->status,
-            'date' => Date::parse($this?->start_date)->format('H:i') . ' - ' . Date::parse($this?->end_date)->format('H:i'),
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'status' => $this->status,
+            'start_date' => Date::parse($this->start_date)->format('H:i'),
+            'end_date' => Date::parse($this->end_date)->format('H:i'),
         ];
     }
 }

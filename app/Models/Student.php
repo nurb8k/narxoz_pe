@@ -22,7 +22,7 @@ class Student extends Model
         'attendance_count',
     ];
 
-    protected $appends = ['user_type'];
+    protected $appends = ['user_type','fio'];
 
     public function lessons(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
@@ -31,6 +31,10 @@ class Student extends Model
             ->withTimestamps();
     }
 
+    public function groups()
+    {
+        return $this->hasMany(Subscription::class, 'student_id', 'id');
+    }
     public function reviews(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Teacher::class, 'reviews', 'student_id', 'teacher_id')
@@ -50,6 +54,11 @@ class Student extends Model
     public function getFioAttribute() : string
     {
         return $this?->user?->name. ' ' . $this?->user?->surname;
+    }
+
+    public function getCourseCompletedAttribute()
+    {
+        return $this->attendance_count;
     }
 
 

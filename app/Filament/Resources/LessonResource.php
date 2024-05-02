@@ -19,7 +19,7 @@ class LessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
 
-    protected static ?string $navigationLabel = 'Занятия';
+    protected static ?string $navigationLabel = 'Занятии';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 4;
@@ -99,8 +99,7 @@ class LessonResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('teacher.fio')
-                    ->label('Преподаватель')
-                    ->sortable(),
+                    ->label('Преподаватель'),
                 /*Tables\Columns\TextColumn::make('title')
                     ->label('Название')
                     ->searchable(),*/
@@ -129,14 +128,6 @@ class LessonResource extends Resource
                     ->label('Место проведения')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -165,5 +156,9 @@ class LessonResource extends Resource
             'create' => Pages\CreateLesson::route('/create'),
             'edit' => Pages\EditLesson::route('/{record}/edit'),
         ];
+    }
+    public static function getPluralLabel(): string
+    {
+        return 'Занятии';
     }
 }

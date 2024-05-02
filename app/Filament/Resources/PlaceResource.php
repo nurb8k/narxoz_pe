@@ -47,8 +47,8 @@ class PlaceResource extends Resource
                     ->columnSpanFull()
                     ->required()
                     ->options([
-                        'ulk' => 'УЛК',
-                        'guk' => 'ГУК',
+                        'УЛК' => 'УЛК',
+                        'ГУК' => 'ГУК',
                     ]),
             ]);
     }
@@ -72,16 +72,6 @@ class PlaceResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Корпус')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Создано')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Обновлено')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -110,5 +100,10 @@ class PlaceResource extends Resource
             'create' => Pages\CreatePlace::route('/create'),
             'edit' => Pages\EditPlace::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Места';
     }
 }

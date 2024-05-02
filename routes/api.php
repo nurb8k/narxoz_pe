@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/teachers', [Api\TeacherController::class, 'index']);
     Route::get('/teacher/{teacher}', [Api\TeacherController::class, 'show']);
 
+
     Route::get('/news', [Api\NewsController::class, 'index']);
     Route::get('/news/{news}', [Api\NewsController::class, 'show']);
 

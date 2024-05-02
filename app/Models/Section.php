@@ -17,6 +17,7 @@ class Section extends Model
         'status'
     ];
 
+
     public function lessons(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Lesson::class);

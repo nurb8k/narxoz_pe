@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Section;
+namespace App\Http\Resources\Lesson;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property mixed $id
- * @property mixed $title
- * @property mixed $icon
+
  */
-class ListResource extends JsonResource
+class GroupListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,9 +19,8 @@ class ListResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'icon' => asset('storage/' . $this->icon)
+            'group' => $this['group'],
+            'lessons' => ShowAfterGroupResource::collection($this['lessons']),
         ];
     }
 }

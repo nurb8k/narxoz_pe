@@ -38,6 +38,7 @@ class NewsResource extends Resource
                     ->label('Заголовок')
                     ->maxLength(255),
                 RichEditor::make('description')
+                    ->label('Описание')
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('image')
@@ -69,8 +70,7 @@ class NewsResource extends Resource
                 Select::make('sections')
                 ->label('Разделы')
                 ->relationship('sections', 'title')
-                ->multiple()
-                ->required(),
+                ->multiple(),
             ]);
     }
 
@@ -81,6 +81,9 @@ class NewsResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->numeric()
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Изображение')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->wrap()
@@ -108,16 +111,6 @@ class NewsResource extends Resource
                 Tables\Columns\TextColumn::make('sections.title')
                     ->label('Секции')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Дата создания')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Дата обновления')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -151,5 +144,9 @@ class NewsResource extends Resource
     public static function getNavigationBadge(): ?string
     {
        return self::getModel()::count();
+    }
+    public static function getPluralLabel(): string
+    {
+        return 'Новости';
     }
 }

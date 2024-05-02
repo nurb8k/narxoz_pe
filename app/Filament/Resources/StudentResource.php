@@ -5,14 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
+use Faker\Provider\Text;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class StudentResource extends Resource
 {
@@ -94,10 +94,9 @@ class StudentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
-
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('user.avatar')
+                Tables\Columns\ImageColumn::make('user.avatar_path')
                     ->label('Аватар')
                     ->alignCenter()
                     ->circular(),
@@ -139,25 +138,47 @@ class StudentResource extends Resource
                     })
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('attendance_count')
+                    ->label('Количество посещений')
+                    ->alignCenter()
+                    ->badge()
+                    ->color(function (int $state): string{
+                        if ($state <= 3) {
+                            return 'danger';
+                        } elseif ($state < 10) {
+                            return 'warning';
+                        } else {
+                            return 'success';
+                        }
+                    })
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('course_completed')
+                    ->visible(false)
+                    ->label('Зачет')
+                    ->formatStateUsing(function (int $state): string {
+                        if ($state >= 10) {
+                            return 'Зачёт';
+                        } else {
+                            return 'не зачёт (не хватает ' . (10 - $state) . ' занятий)';
+                        }
+                    }),
+
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                ExportBulkAction::make(),
             ]);
     }
 
@@ -175,5 +196,10 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Студенты';
     }
 }

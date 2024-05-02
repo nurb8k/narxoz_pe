@@ -18,7 +18,7 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static ?string $navigationLabel = 'События';
+    protected static ?string $navigationLabel = 'Событии';
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?int $navigationSort = 2;
@@ -81,14 +81,6 @@ class EventResource extends Resource
                     ->label('Дата окончания')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
         //
@@ -123,5 +115,10 @@ class EventResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return self::getModel()::count();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Событии';
     }
 }

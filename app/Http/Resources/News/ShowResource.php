@@ -20,7 +20,7 @@ class ShowResource extends JsonResource
             'title' => $this?->title,
             'description' => $this?->description,
             'sections' => $this?->sections->pluck('title'),
-            'image' => $this?->image,
+            'image' => asset('storage/' . $this->image),
             'created_at' => $this?->created_at?->diffForHumans(),
         ];
     }

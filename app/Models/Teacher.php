@@ -16,7 +16,8 @@ class Teacher extends Model
         'experience_year',
     ];
 
-    protected $appends = ['user_type'];
+    protected $appends = ['user_type','fio'];
+
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -26,6 +27,14 @@ class Teacher extends Model
     public function lessons(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Lesson::class, 'teacher_id', 'id');
+    }
+
+    public function groups()
+    {
+//        return $this->hasManyThrough(Lesson::class, Subscription::class)
+        $lessonIds = $this->lessons()->pluck('id');
+        return Subscription::whereIn('lesson_id', $lessonIds);
+
     }
 
     public function reviews(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

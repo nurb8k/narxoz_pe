@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
         return [
 //            i need check identifier first letter is S or F
             'identifier' => ['required', 'string', 'max:255','regex:/^[S|s|f|F]/'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['required', 'string'],
         ];
     }
 }

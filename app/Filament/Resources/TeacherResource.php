@@ -22,7 +22,7 @@ class TeacherResource extends Resource
 {
     protected static ?string $model = Teacher::class;
 
-    protected static ?string $navigationLabel = 'Учителя';
+    protected static ?string $navigationLabel = 'Тренеры';
     protected static ?int $navigationSort = 10;
 
 //    protected static ?string $navigationGroup = 'Про Занятия';
@@ -88,7 +88,7 @@ class TeacherResource extends Resource
                     ->label('ID')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('user.avatar')
+                Tables\Columns\ImageColumn::make('user.avatar_path')
                     ->label('Аватар')
                     ->circular(),
                 Tables\Columns\TextColumn::make('user_identifier')
@@ -100,14 +100,6 @@ class TeacherResource extends Resource
                 Tables\Columns\TextColumn::make('sections.title')
                     ->label('Секция')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -136,5 +128,9 @@ class TeacherResource extends Resource
             'create' => Pages\CreateTeacher::route('/create'),
             'edit' => Pages\EditTeacher::route('/{record}/edit'),
         ];
+    }
+    public static function getPluralLabel(): string
+    {
+        return 'Тренеры';
     }
 }
