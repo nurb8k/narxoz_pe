@@ -36,28 +36,29 @@ class ShowAfterGroupResource extends JsonResource
     public function toArray(Request $request): array
     {
 //        dd($this->with['user_id']);
-        return [
+
+            return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this?->description,
+            'description' => $this->description,
             'start_time' => (string)$this->getParseDateTimeToString($this->start_time),
             'end_time' => (string)$this->getParseDateTimeToString($this->end_time),
             'capacity' =>  $this->capacity,
             'day_of_week' => $this->day_of_week,
-            'status' => $this?->status,
-            'type' => $this?->type,
+            'status' => $this->status,
+            'type' => $this->type,
             'is_available' => (int)$this->capacity - $this->studentCount > 0 ? (int)$this->capacity - $this->studentCount . ' мест' : 'мест нет',
-            'color_type' => $this?->color,
+            'color_type' => $this->color,
             'teacher' => [
-                'id' => $this?->teacher->id,
-                'name' => $this?->teacher->user->name,
-                'surname' => $this?->teacher->user->surname,
-                'middle_name' => $this?->teacher->user->middle_name,
-                'avatar' => asset($this?->teacher->user->avatar_path),
+                'id' => $this->teacher->id,
+                'name' => $this->teacher->user->name,
+                'surname' => $this->teacher->user->surname,
+                'middle_name' => $this->teacher->user->middle_name,
+                'avatar' => asset($this->teacher->user->avatar_path),
             ],
 //            'place' => $this?->place?->status .', '. $this?->place->title .', '. $this?->place->address,
-            'students_count' => $this->studentCount,
-            'lesson_date' => $this->lesson_date
+            'students_count' => (int)$this->studentCount,
+            'lesson_date' => (string)$this->lesson_date
 //            'is_available' => $this->is_available??false,
             //'students' => StudentResource::collection($this->groupStudents($request->group)),
             //
